@@ -921,7 +921,7 @@
  *                                      X, Y, Z [, I [, J [, K]]], E0 [, E1[, E2...]]
  */
 //@ settings from 1.0.3 stock firmware
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 1600, 412 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 1600, 140 }
 
 /**
  * Default Max Feed Rate (mm/s)
@@ -1330,7 +1330,7 @@
 //@ TMC2208 behavior
 #define INVERT_X_DIR true
 #define INVERT_Y_DIR true
-#define INVERT_Z_DIR false
+#define INVERT_Z_DIR true
 //#define INVERT_I_DIR false
 //#define INVERT_J_DIR false
 //#define INVERT_K_DIR false
