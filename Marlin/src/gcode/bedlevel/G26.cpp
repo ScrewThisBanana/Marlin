@@ -176,25 +176,29 @@ void move_to(const_float_t rx, const_float_t ry, const_float_t z, const_float_t 
 
   const xy_pos_t dest = { rx, ry };
 
-  const bool has_xy_component = dest != current_position, // Check if X or Y is involved in the movement.
-             has_e_component = e_delta != 0.0;
+  const bool has_xy_component = dest != current_position; // Check if X or Y is involved in the movement.  
+  const bool has_e_component = e_delta != 0.0;
+
+  destination = current_position;
 
   if (z != last_z) {
-    last_z = z;
-    destination.set(current_position.x, current_position.y, z, current_position.e);
-    const feedRate_t fr_mm_s = planner.settings.max_feedrate_mm_s[Z_AXIS] * 0.5f; // Use half of the Z_AXIS max feed rate
-    prepare_internal_move_to_destination(fr_mm_s);
+    last_z = destination.z = z;
+    const feedRate_t feed_value = planner.settings.max_feedrate_mm_s[Z_AXIS] * 0.5f; // Use half of the Z_AXIS max feed rate
+    prepare_internal_move_to_destination(feed_value);
+    destination = current_position;
   }
 
-  // If X or Y in combination with E is involved do a 'normal' move.
+  // If X or Y in combination with E is involved do a 'normal' move. 
   // If X or Y with no E is involved do a 'fast' move
   // Otherwise retract/recover/hop.
   destination = dest;
   destination.e += e_delta;
-  const feedRate_t fr_mm_s = has_xy_component
-    ? (has_e_component ? feedRate_t(G26_XY_FEEDRATE) : feedRate_t(G26_XY_FEEDRATE_TRAVEL))
+  const feedRate_t feed_value = 
+    has_xy_component 
+    ? (has_e_component ? feedRate_t(G26_XY_FEEDRATE) : feedRate_t(G26_XY_FEEDRATE_TRAVEL)) 
     : planner.settings.max_feedrate_mm_s[E_AXIS] * 0.666f;
-  prepare_internal_move_to_destination(fr_mm_s);
+  prepare_internal_move_to_destination(feed_value);
+  destination = current_position;
 }
 
 void move_to(const xyz_pos_t &where, const_float_t de) { move_to(where.x, where.y, where.z, de); }
